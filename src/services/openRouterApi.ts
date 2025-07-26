@@ -149,14 +149,25 @@ Return content that feels naturally written by a skilled human writer.`;
 
   // Method for generating keywords
   async generateKeywords(seedKeyword: string, apiKey: string): Promise<string> {
-    const systemPrompt = `You are an expert SEO keyword researcher. Your task is to generate a list of semantically related keywords based on a seed keyword. The list should be plain text, with each keyword on a new line. Do not use any formatting, titles, or categories.`;
+    const systemPrompt = `You are an expert SEO keyword researcher with access to YouTube trending data. Generate comprehensive, semantically related keywords that are valuable for SEO strategy. Focus on:
 
-    const prompt = `Generate a raw list of 50-100 SEO keywords related to: "${seedKeyword}". The output should be a simple, unformatted list of keywords, with each keyword on a new line.`;
+1. Long-tail variations
+2. Question-based keywords
+3. Commercial intent keywords
+4. Related semantic keywords
+5. Local variations (when applicable)
+6. Different search intents (informational, commercial, transactional)
+7. YouTube trending keywords and phrases
+8. Viral content patterns
+
+Return keywords in a clear, organized format with search intent context and trending indicators.`;
+
+    const prompt = `Generate 25+ high-value SEO keywords related to: "${seedKeyword}". Include different types of keywords (short-tail, long-tail, questions, commercial intent, YouTube trending) and organize them by search intent with engagement potential indicators.`;
 
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
-      temperature: 0.7,
-      maxTokens: 1500
+      temperature: 0.6,
+      maxTokens: 2000
     });
   }
 }
