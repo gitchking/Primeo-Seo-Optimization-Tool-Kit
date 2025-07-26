@@ -1,25 +1,26 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Copy, Search, RefreshCw, TrendingUp } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { useApi } from "@/contexts/ApiContext";
-import { openRouterAPI } from "@/services/openRouterApi";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useApi } from '@/contexts/ApiContext';
+import { openRouterAPI } from '@/services/openRouterApi';
+import { Search, Copy, Download, RefreshCw, TrendingUp } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
-const Keywords = () => {
-  const [keyword, setKeyword] = useState("");
-  const [generatedKeywords, setGeneratedKeywords] = useState("");
+const Keywords: React.FC = () => {
+  const [seedKeyword, setSeedKeyword] = useState('');
+  const [output, setOutput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
   const { apiKey, isConfigured } = useApi();
+  const { toast } = useToast();
 
   const handleGenerate = async () => {
-    if (!keyword.trim()) {
+    if (!seedKeyword.trim()) {
       toast({
-        title: "Input Required",
-        description: "Please enter your keywords in the input field.",
-        variant: "destructive",
+        title: "Keyword Required",
+        description: "Please enter a seed keyword to generate related keywords.",
+        variant: "destructive"
       });
       return;
     }
@@ -35,8 +36,8 @@ const Keywords = () => {
 
     setIsLoading(true);
     try {
-      const result = await openRouterAPI.generateKeywords(keyword, apiKey);
-      setGeneratedKeywords(result);
+      const result = await openRouterAPI.generateKeywords(seedKeyword, apiKey);
+      setOutput(result);
       toast({
         title: "Keywords Generated!",
         description: "Your keyword research has been completed successfully.",
@@ -52,89 +53,143 @@ const Keywords = () => {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedKeywords);
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(output);
     toast({
       title: "Copied!",
       description: "Keywords copied to clipboard.",
     });
   };
 
+  const downloadText = () => {
+    const blob = new Blob([output], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `keywords-${seedKeyword.toLowerCase().replace(/\s+/g, '-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const quickKeywords = [
+    'digital marketing',
+    'content strategy',
+    'SEO optimization',
+    'social media marketing',
+    'email marketing',
+    'brand awareness'
+  ];
+
   return (
     <div className="space-y-6 animate-fade-in">
+      {/* Header */}
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
           <Search className="w-6 h-6 text-white" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold text-gradient">Keywords Tool</h1>
-          <p className="text-muted-foreground">
-            Generate trending keywords with AI.
-          </p>
+          <h1 className="text-3xl font-bold text-gradient">Keyword Research Tool</h1>
+          <p className="text-muted-foreground">Discover high-value keywords for your content strategy</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Input Card */}
-        <Card className="card-premium p-6">
-          <div className="flex flex-col h-full">
-            <h3 className="text-lg font-semibold mb-4">Your Seed Keyword</h3>
-            <Textarea
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="Enter your seed keyword here..."
-              className="flex-grow h-80"
-            />
-            <Button onClick={handleGenerate} disabled={isLoading || !isConfigured} variant="premium" className="mt-4 w-full">
-              {isLoading ? (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                "Generate Keywords"
-              )}
-            </Button>
-          </div>
-        </Card>
-
-        {/* Output Card */}
-        <Card className="card-premium p-6">
-          <div className="flex flex-col h-full">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Generated Keywords</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={copyToClipboard}
-                disabled={!generatedKeywords}
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
-            </div>
-            <Textarea
-              readOnly
-              value={generatedKeywords}
-              className="h-full bg-muted/30 border-border/50"
-              placeholder="Your generated keywords will appear here..."
-            />
-          </div>
-        </Card>
-      </div>
-
-      {/* Best Practices Card */}
+      {/* Input Form */}
       <Card className="card-premium p-6">
-        <h3 className="text-lg font-semibold mb-4">🎯 Keyword Best Practices</h3>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="seedKeyword">Seed Keyword *</Label>
+            <Input
+              id="seedKeyword"
+              placeholder="e.g., digital marketing, fitness, cryptocurrency"
+              value={seedKeyword}
+              onChange={(e) => setSeedKeyword(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleGenerate()}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label>Quick Start Examples:</Label>
+            <div className="flex flex-wrap gap-2">
+              {quickKeywords.map((keyword) => (
+                <Button
+                  key={keyword}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSeedKeyword(keyword)}
+                  className="text-xs"
+                >
+                  {keyword}
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          <Button 
+            variant="premium" 
+            onClick={handleGenerate}
+            disabled={isLoading || !isConfigured}
+            className="w-full"
+          >
+            {isLoading ? (
+              <>
+                <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                Researching Keywords...
+              </>
+            ) : (
+              <>
+                <Search className="w-4 h-4 mr-2" />
+                Generate Keywords
+              </>
+            )}
+          </Button>
+        </div>
+      </Card>
+
+      {/* Output Section */}
+      {output && (
+        <Card className="card-premium p-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Keyword Research Results</h3>
+              <div className="flex gap-2">
+                <Button variant="ghost" size="sm" onClick={copyToClipboard}>
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copy
+                </Button>
+                <Button variant="ghost" size="sm" onClick={downloadText}>
+                  <Download className="w-4 h-4 mr-2" />
+                  Download
+                </Button>
+              </div>
+            </div>
+            
+            <div className="p-6 bg-muted/30 rounded-lg border border-border/50 max-h-96 overflow-y-auto">
+              <div className="prose prose-sm max-w-none">
+                <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">
+                  {output}
+                </pre>
+              </div>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Keyword Research Tips */}
+      <Card className="card-premium p-6">
+        <h3 className="text-lg font-semibold mb-4">🎯 Keyword Research Strategy</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-primary font-medium">
               <TrendingUp className="w-4 h-4" />
-              Search Intent
+              Search Intent Types
             </div>
             <ul className="space-y-1 text-muted-foreground">
-              <li>• <strong>Informational:</strong> Users looking for information. (e.g., "how to bake a cake")</li>
-              <li>• <strong>Commercial:</strong> Users investigating products or services. (e.g., "best running shoes")</li>
-              <li>• <strong>Transactional:</strong> Users ready to buy. (e.g., "buy iphone 14 pro")</li>
+              <li>• <strong>Informational:</strong> "How to", "What is"</li>
+              <li>• <strong>Commercial:</strong> "Best", "Reviews"</li>
+              <li>• <strong>Transactional:</strong> "Buy", "Purchase"</li>
+              <li>• <strong>Navigational:</strong> Brand names</li>
             </ul>
           </div>
           
@@ -144,9 +199,10 @@ const Keywords = () => {
               Keyword Types
             </div>
             <ul className="space-y-1 text-muted-foreground">
-              <li>• <strong>Short-tail:</strong> Broad, high-volume keywords (1-2 words).</li>
-              <li>• <strong>Long-tail:</strong> Specific, lower-volume keywords (3+ words) with higher conversion rates.</li>
-              <li>• <strong>LSI Keywords:</strong> Thematically related keywords.</li>
+              <li>• <strong>Short-tail:</strong> 1-2 words</li>
+              <li>• <strong>Long-tail:</strong> 3+ words</li>
+              <li>• <strong>LSI Keywords:</strong> Semantic variants</li>
+              <li>• <strong>Questions:</strong> FAQ opportunities</li>
             </ul>
           </div>
           
@@ -156,10 +212,10 @@ const Keywords = () => {
               Optimization Tips
             </div>
             <ul className="space-y-1 text-muted-foreground">
-              <li>• Balance search volume with keyword difficulty.</li>
-              <li>• Ensure content aligns with user search intent.</li>
-              <li>• Group related keywords into thematic clusters.</li>
-              <li>• Analyze competitor keywords for opportunities.</li>
+              <li>• Focus on search volume + difficulty</li>
+              <li>• Target user intent alignment</li>
+              <li>• Create keyword clusters</li>
+              <li>• Monitor competitor keywords</li>
             </ul>
           </div>
         </div>
