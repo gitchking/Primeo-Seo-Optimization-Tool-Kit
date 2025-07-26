@@ -176,50 +176,6 @@ const Keywords: React.FC = () => {
         </Card>
       )}
 
-      {/* Keyword Research Tips */}
-      <Card className="card-premium p-6">
-        <h3 className="text-lg font-semibold mb-4">🎯 Keyword Research Strategy</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-primary font-medium">
-              <TrendingUp className="w-4 h-4" />
-              Search Intent Types
-            </div>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>• <strong>Informational:</strong> "How to", "What is"</li>
-              <li>• <strong>Commercial:</strong> "Best", "Reviews"</li>
-              <li>• <strong>Transactional:</strong> "Buy", "Purchase"</li>
-              <li>• <strong>Navigational:</strong> Brand names</li>
-            </ul>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-primary font-medium">
-              <Search className="w-4 h-4" />
-              Keyword Types
-            </div>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>• <strong>Short-tail:</strong> 1-2 words</li>
-              <li>• <strong>Long-tail:</strong> 3+ words</li>
-              <li>• <strong>LSI Keywords:</strong> Semantic variants</li>
-              <li>• <strong>Questions:</strong> FAQ opportunities</li>
-            </ul>
-          </div>
-          
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-primary font-medium">
-              <TrendingUp className="w-4 h-4" />
-              Optimization Tips
-            </div>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>• Focus on search volume + difficulty</li>
-              <li>• Target user intent alignment</li>
-              <li>• Create keyword clusters</li>
-              <li>• Monitor competitor keywords</li>
-            </ul>
-          </div>
-        </div>
-      </Card>
     </div>
   );
 };

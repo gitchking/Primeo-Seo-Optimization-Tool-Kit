@@ -46,7 +46,7 @@ class OpenRouterAPI {
     const {
       model = 'openai/gpt-4o-mini',
       temperature = 0.7,
-      maxTokens = 1500
+      maxTokens = 2000
     } = options;
 
     const messages: OpenRouterMessage[] = [
@@ -81,6 +81,8 @@ class OpenRouterAPI {
         
         if (response.status === 401) {
           throw new Error('Invalid API key. Please check your OpenRouter API key in settings.');
+        } else if (response.status === 402) {
+          throw new Error('Insufficient credits. Please check your OpenRouter account balance.');
         } else if (response.status === 429) {
           throw new Error('Rate limit exceeded. Please try again in a moment.');
         } else {
@@ -118,7 +120,7 @@ Respond with well-structured, professional content that provides genuine value t
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
       temperature: 0.7,
-      maxTokens: 1500
+      maxTokens: 3000
     });
   }
 
@@ -141,31 +143,20 @@ Return content that feels naturally written by a skilled human writer.`;
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
       temperature: 0.8,
-      maxTokens: 1500
+      maxTokens: 3000
     });
   }
 
   // Method for generating keywords
   async generateKeywords(seedKeyword: string, apiKey: string): Promise<string> {
-    const systemPrompt = `You are an expert SEO keyword researcher with access to YouTube trending data. Generate comprehensive, semantically related keywords that are valuable for SEO strategy. Focus on:
+    const systemPrompt = `You are an expert SEO keyword researcher. Your task is to generate a comprehensive list of keywords related to the user's query. The list should be a simple, plain-text list with one keyword per line. Do not add any titles, categories, or extra formatting.`;
 
-1. Long-tail variations
-2. Question-based keywords
-3. Commercial intent keywords
-4. Related semantic keywords
-5. Local variations (when applicable)
-6. Different search intents (informational, commercial, transactional)
-7. YouTube trending keywords and phrases
-8. Viral content patterns
-
-Return keywords in a clear, organized format with search intent context and trending indicators.`;
-
-    const prompt = `Generate 25+ high-value SEO keywords related to: "${seedKeyword}". Include different types of keywords (short-tail, long-tail, questions, commercial intent, YouTube trending) and organize them by search intent with engagement potential indicators.`;
+    const prompt = `Generate an extensive list of SEO keywords related to: "${seedKeyword}". Provide a raw list of keywords, one per line, without any additional formatting or categorization.`;
 
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
       temperature: 0.6,
-      maxTokens: 1500
+      maxTokens: 2000
     });
   }
 }
