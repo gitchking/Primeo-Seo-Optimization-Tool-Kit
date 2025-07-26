@@ -81,8 +81,6 @@ class OpenRouterAPI {
         
         if (response.status === 401) {
           throw new Error('Invalid API key. Please check your OpenRouter API key in settings.');
-        } else if (response.status === 402) {
-          throw new Error('Insufficient credits. Please check your OpenRouter account balance.');
         } else if (response.status === 429) {
           throw new Error('Rate limit exceeded. Please try again in a moment.');
         } else {
