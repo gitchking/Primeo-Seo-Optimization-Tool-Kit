@@ -12,7 +12,6 @@ const KeywordResearch = () => {
   const generateKeywords = () => {
     if (!keyword) return;
     setIsLoading(true);
-    // Simulate API call
     setTimeout(() => {
       const keywords = `anime 2025
 new anime 2025
@@ -442,7 +441,7 @@ vergil dmc anime 2025
 vergil devil may cry anime 2025
 vigilante anime 2025
 violent anime 2025
-vote anime 2025
+vote anime 202.5
 vampire bl anime 2025
 vergil anime 2025
 video game anime 2025
@@ -617,7 +616,7 @@ which anime is coming on 9th feb 2025
 what is on 9 february 2025 in anime
 spring 2025 anime rankings week 9
 what is on 9 february 2025 in anime list
-9anime anime awards 2023`.replace(/^(best|top \d+)\s/i, '');
+9anime anime awards 2023`;
       setGeneratedKeywords(keywords);
       setIsLoading(false);
     }, 1000);
