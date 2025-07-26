@@ -170,7 +170,8 @@ Create visually appealing, organized ideas that inspire immediate action!`;
       const result = await openRouterAPI.generateContent(prompt, systemPrompt, apiKey, {
         model: 'openai/gpt-4o-mini',
         temperature: 0.8,
-        maxTokens: 3000
+        maxTokens: 3000,
+        humanize: true
       });
       
       setOutput(result);

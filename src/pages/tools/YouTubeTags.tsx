@@ -92,7 +92,8 @@ const YouTubeTags: React.FC = () => {
       const result = await openRouterAPI.generateContent(prompt, systemPrompt, apiKey, {
         model: 'openai/gpt-4o-mini',
         temperature: 0.7,
-        maxTokens: 2000
+        maxTokens: 2000,
+        humanize: true
       });
       
       const tags = result.split(',').map(tag => tag.trim()).filter(tag => tag);

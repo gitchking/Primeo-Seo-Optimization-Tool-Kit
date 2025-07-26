@@ -30,13 +30,14 @@ class OpenRouterAPI {
   private baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
   
   async generateContent(
-    prompt: string, 
-    systemPrompt: string, 
+    prompt: string,
+    systemPrompt: string,
     apiKey: string,
     options: {
       model?: string;
       temperature?: number;
       maxTokens?: number;
+      humanize?: boolean;
     } = {}
   ): Promise<string> {
     if (!apiKey.trim()) {
@@ -46,11 +47,18 @@ class OpenRouterAPI {
     const {
       model = 'openai/gpt-4o-mini',
       temperature = 0.7,
-      maxTokens = 2000
+      maxTokens = 2000,
+      humanize = false
     } = options;
 
+    let finalSystemPrompt = systemPrompt;
+    if (humanize) {
+      finalSystemPrompt += `
+Make the output sound natural and human-written. Avoid robotic language, vary sentence structure, and add a touch of personality. Ensure the output is clean, simple, and free of symbols like asterisks or hashes.`;
+    }
+
     const messages: OpenRouterMessage[] = [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: finalSystemPrompt },
       { role: 'user', content: prompt }
     ];
 
@@ -120,7 +128,8 @@ Respond with well-structured, professional content that provides genuine value t
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
       temperature: 0.7,
-      maxTokens: 3000
+      maxTokens: 3000,
+      humanize: true
     });
   }
 
@@ -167,7 +176,8 @@ Return keywords in a clear, organized format with search intent context and tren
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
       temperature: 0.6,
-      maxTokens: 2000
+      maxTokens: 2000,
+      humanize: true
     });
   }
 }
