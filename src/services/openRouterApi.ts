@@ -149,14 +149,14 @@ Return content that feels naturally written by a skilled human writer.`;
 
   // Method for generating keywords
   async generateKeywords(seedKeyword: string, apiKey: string): Promise<string> {
-    const systemPrompt = `You are an expert SEO keyword researcher. Your task is to generate a comprehensive list of keywords related to the user's query. The list should be a simple, plain-text list with one keyword per line. Do not add any titles, categories, or extra formatting.`;
+    const systemPrompt = `You are an expert SEO keyword researcher. Your task is to generate a list of semantically related keywords based on a seed keyword. The list should be plain text, with each keyword on a new line. Do not use any formatting, titles, or categories.`;
 
-    const prompt = `Generate an extensive list of SEO keywords related to: "${seedKeyword}". Provide a raw list of keywords, one per line, without any additional formatting or categorization.`;
+    const prompt = `Generate a raw list of 50-100 SEO keywords related to: "${seedKeyword}". The output should be a simple, unformatted list of keywords, with each keyword on a new line.`;
 
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
-      temperature: 0.6,
-      maxTokens: 2000
+      temperature: 0.7,
+      maxTokens: 1500
     });
   }
 }
