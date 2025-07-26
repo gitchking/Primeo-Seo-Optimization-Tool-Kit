@@ -32,7 +32,6 @@ const tools: NavItem[] = [
   { label: 'AI Detector', path: '/ai-detector', icon: Shield, color: 'text-emerald-500' },
   { label: 'SEO Articles', path: '/seo-articles', icon: FileText, color: 'text-blue-500' },
   { label: 'Keywords', path: '/keywords', icon: Search, color: 'text-green-500' },
-  { label: 'Keyword Research', path: '/keyword-research', icon: Target, color: 'text-red-500' },
   { label: 'Meta Tags', path: '/meta-tags', icon: Tag, color: 'text-orange-500' },
   { label: 'Email Outreach', path: '/email-outreach', icon: Mail, color: 'text-pink-500' },
   { label: 'YouTube Scripts', path: '/youtube-scripts', icon: Video, color: 'text-red-500' },

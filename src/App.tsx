@@ -30,7 +30,6 @@ import PromptGenerator from "@/pages/tools/PromptGenerator";
 import YouTubeSEO from "@/pages/tools/YouTubeSEO";
 import YouTubeTags from "@/pages/tools/YouTubeTags";
 import VideoIdeas from "@/pages/tools/VideoIdeas";
-import KeywordResearch from "@/pages/tools/KeywordResearch";
 
 const queryClient = new QueryClient();
 
@@ -54,7 +53,6 @@ const App = () => (
                   <Route path="ai-detector" element={<AIDetector />} />
                   <Route path="seo-articles" element={<SEOArticles />} />
                   <Route path="keywords" element={<Keywords />} />
-                  <Route path="keyword-research" element={<KeywordResearch />} />
                   <Route path="meta-tags" element={<MetaTags />} />
                   <Route path="email-outreach" element={<EmailOutreach />} />
                   <Route path="youtube-scripts" element={<YouTubeScripts />} />
