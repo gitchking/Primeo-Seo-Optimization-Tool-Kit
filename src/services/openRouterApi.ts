@@ -46,7 +46,7 @@ class OpenRouterAPI {
     const {
       model = 'openai/gpt-4o-mini',
       temperature = 0.7,
-      maxTokens = 2000
+      maxTokens = 1500
     } = options;
 
     const messages: OpenRouterMessage[] = [
@@ -118,7 +118,7 @@ Respond with well-structured, professional content that provides genuine value t
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
       temperature: 0.7,
-      maxTokens: 3000
+      maxTokens: 1500
     });
   }
 
@@ -141,7 +141,7 @@ Return content that feels naturally written by a skilled human writer.`;
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
       temperature: 0.8,
-      maxTokens: 3000
+      maxTokens: 1500
     });
   }
 
@@ -165,7 +165,7 @@ Return keywords in a clear, organized format with search intent context and tren
     return this.generateContent(prompt, systemPrompt, apiKey, {
       model: 'openai/gpt-4o-mini',
       temperature: 0.6,
-      maxTokens: 2000
+      maxTokens: 1500
     });
   }
 }
