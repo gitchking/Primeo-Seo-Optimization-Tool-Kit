@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Copy, Search, RefreshCw, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useApi } from "@/contexts/ApiContext";
+import { openRouterAPI } from "@/services/openRouterApi";
 
 const Keywords = () => {
   const [keyword, setKeyword] = useState("");
   const [generatedKeywords, setGeneratedKeywords] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { apiKey, isConfigured } = useApi();
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!keyword.trim()) {
       toast({
         title: "Input Required",
@@ -21,15 +23,33 @@ const Keywords = () => {
       });
       return;
     }
-    setIsLoading(true);
-    setTimeout(() => {
-      setGeneratedKeywords(keyword);
+
+    if (!isConfigured) {
       toast({
-        title: "Keywords Processed!",
-        description: "Your keywords are now in the output box.",
+        title: "API Key Required",
+        description: "Please configure your OpenRouter API key in settings.",
+        variant: "destructive"
       });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await openRouterAPI.generateKeywords(keyword, apiKey);
+      setGeneratedKeywords(result);
+      toast({
+        title: "Keywords Generated!",
+        description: "Your keyword research has been completed successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to generate keywords",
+        variant: "destructive"
+      });
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   const copyToClipboard = () => {
@@ -49,7 +69,7 @@ const Keywords = () => {
         <div>
           <h1 className="text-3xl font-bold text-gradient">Keywords Tool</h1>
           <p className="text-muted-foreground">
-            Format and manage your keyword lists.
+            Generate trending keywords with AI.
           </p>
         </div>
       </div>
@@ -58,21 +78,21 @@ const Keywords = () => {
         {/* Input Card */}
         <Card className="card-premium p-6">
           <div className="flex flex-col h-full">
-            <h3 className="text-lg font-semibold mb-4">Your Keywords</h3>
+            <h3 className="text-lg font-semibold mb-4">Your Seed Keyword</h3>
             <Textarea
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              placeholder="Enter your keywords here, one per line..."
+              placeholder="Enter your seed keyword here..."
               className="flex-grow h-80"
             />
-            <Button onClick={handleGenerate} disabled={isLoading} variant="premium" className="mt-4 w-full">
+            <Button onClick={handleGenerate} disabled={isLoading || !isConfigured} variant="premium" className="mt-4 w-full">
               {isLoading ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Processing...
+                  Generating...
                 </>
               ) : (
-                "Process Keywords"
+                "Generate Keywords"
               )}
             </Button>
           </div>
@@ -82,7 +102,7 @@ const Keywords = () => {
         <Card className="card-premium p-6">
           <div className="flex flex-col h-full">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">Formatted Output</h3>
+              <h3 className="text-lg font-semibold">Generated Keywords</h3>
               <Button
                 variant="ghost"
                 size="icon"
@@ -96,7 +116,7 @@ const Keywords = () => {
               readOnly
               value={generatedKeywords}
               className="h-full bg-muted/30 border-border/50"
-              placeholder="Your formatted keywords will appear here..."
+              placeholder="Your generated keywords will appear here..."
             />
           </div>
         </Card>
